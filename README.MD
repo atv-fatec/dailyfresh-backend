@@ -1,4 +1,4 @@
-<h1 align=center>DeliFresh ✨</h1>
+<h1 align=center>Daily Fresh ✨</h1>
 
 ## 🎯 Goals
 <p>The main goal of this activity was to build an application, demonstrating GDPL principals.</p>
