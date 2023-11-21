@@ -9,19 +9,19 @@ export class Resposta {
     })
     id!: number
 
-    @Column({ default: 0 })
+    @Column()
     armazenamentoDados!: boolean
 
-    @Column({ default: 0 })
+    @Column()
     pagamentoDados!: boolean
 
-    @Column({ default: 0 })
+    @Column()
     propagandas!: boolean
 
-    @Column({ default: 0 })
+    @Column()
     envioEmail!: boolean
 
-    @Column({ default: 0 })
+    @Column()
     envioSms!: boolean
 
     @ManyToOne(() => Termo, (termo) => termo.resposta)

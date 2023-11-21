@@ -23,7 +23,7 @@ class TermService {
 
             return { data: termEntity, msg: 'Termo criado com sucesso!' }
         } catch (error) {
-            return { data: '', msg: `Erro: ${error}` }
+            return { data: 'Erro ao criar os termos!', msg: `Erro: ${error}` }
         }
     }
 
@@ -46,7 +46,7 @@ class TermService {
 
             return { data: search, msg: 'Termo encontrado com sucesso!' }
         } catch (error) {
-            return { data: '', msg: `Erro: ${error}` }
+            return { data: 'Erro ao retornar os termos!', msg: `Erro: ${error}` }
         }
     }
 
@@ -61,7 +61,7 @@ class TermService {
         if (!search?.id) {
             return 0
         }        
-
+        
         return search?.id
     }
 }
