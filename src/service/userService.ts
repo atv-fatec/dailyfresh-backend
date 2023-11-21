@@ -17,6 +17,14 @@ class UserService {
 
     public async createUser(data: ICreateUser, termos: IAcceptCondition): Promise<IPromiseResponse> {
         try {
+            const email = await this.repository.findOneBy({ email: data.email })
+
+            const cpf = await this.repository.findOneBy({ cpf: data.cpf })
+
+            if (cpf !== undefined || email !== undefined) {
+                return { data: 'Email ou CPF já estão sendo utilizados!', msg: 'Erro no cadastro do usuário!' }
+            }
+
             const userEntity = this.repository.create({
                 nome: data.nome,
                 email: data.email,
@@ -70,6 +78,15 @@ class UserService {
                 telefone: data.telefone && data.telefone !== userEntity?.telefone ? data.telefone : userEntity?.telefone,
                 dataNascimento: data.dataNascimento && data.dataNascimento !== undefined && data.dataNascimento !== userEntity?.dataNascimento ? new Date(data.dataNascimento) : userEntity?.dataNascimento,
                 senha: data.senha && data.senha !== userEntity?.senha ? data.senha : userEntity?.senha,
+            }
+
+            if (userEntity?.cpf || userEntity?.email) {
+                const cpf = await this.repository.findOneBy({ cpf: userEntity?.cpf })
+                const email = await this.repository.findOneBy({ email: userEntity?.email })
+
+                if (cpf !== undefined || email !== undefined) {
+                    return { data: 'Erro ao atualizar o usuário!', msg: `Email ou CPF já estão sendo utilizados!` }
+                }
             }
 
             const update = await this.repository.update({ id: Number(id) },
@@ -134,7 +151,7 @@ class UserService {
             })
 
             await this.repositoryResp.save(accept)
-            
+
             return { data: accept, msg: 'Condições registradas com sucesso!' }
         } catch (error) {
             return { data: 'Erro ao criar as condições!', msg: `Erro: ${error}` }
