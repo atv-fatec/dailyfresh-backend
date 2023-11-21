@@ -1,10 +1,12 @@
-import { IPromiseResponse } from "../interfaces/response";
-import { ICreateUser, IReadUser, IUpdateUser } from "../interfaces/usuario";
-import { DBSource } from "../config/database";
-import { Repository } from "typeorm";
-import { Resposta, Usuario } from "../models";
-import { IAcceptCondition } from "../interfaces/condicao";
-import termService from "./termService";
+import { ICreateUser, IUpdateUser } from '../interfaces/usuario';
+import { IPromiseResponse } from '../interfaces/response';
+import { IAcceptCondition } from '../interfaces/condicao';
+import { addDoc, collection } from 'firebase/firestore';
+import { DBSource } from '../config/database';
+import { Resposta, Usuario } from '../models';
+import { db } from '../config/firebase';
+import termService from './termService';
+import { Repository } from 'typeorm';
 
 class UserService {
     private repository: Repository<Usuario>
@@ -130,7 +132,9 @@ class UserService {
 
             const deletion = await this.repository.delete(id)
 
-            return { data: { deletion, deleteConditions }, msg: 'Usuário e suas informações deletados com sucesso!' }
+            const ref = await addDoc(collection(db, 'deleted'), { id: id })
+
+            return { data: { deletion, deleteConditions, ref }, msg: 'Usuário e suas informações deletados com sucesso!' }
         } catch (error) {
             return { data: 'Erro ao deletar o usuário!', msg: `Erro: ${error}` }
         }
