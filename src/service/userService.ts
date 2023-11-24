@@ -20,10 +20,8 @@ class UserService {
     public async createUser(data: ICreateUser, termos: IAcceptCondition): Promise<IPromiseResponse> {
         try {
             const email = await this.repository.findOneBy({ email: data.email })
-
             const cpf = await this.repository.findOneBy({ cpf: data.cpf })
-
-            if (cpf !== undefined || email !== undefined) {
+            if (cpf !== null|| undefined || email !== null || undefined) {
                 return { data: 'Email ou CPF já estão sendo utilizados!', msg: 'Erro no cadastro do usuário!' }
             }
 
