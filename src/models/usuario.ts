@@ -26,6 +26,6 @@ export class Usuario {
     @Column()
     senha!: string
 
-    @OneToMany(() => Resposta, (resposta) => resposta.usuario)
+    @OneToMany(() => Resposta, (resposta) => resposta.usuario, { onDelete: "CASCADE" })
     resposta!: Resposta
 }
