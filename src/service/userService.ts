@@ -67,6 +67,21 @@ class UserService {
         }
     }
 
+    public async verifyEmail(email: string): Promise<Usuario | null | undefined> {
+        try {
+            const user = await this.repository
+                .createQueryBuilder('usuario')
+                .leftJoinAndSelect('usuario.resposta', 'resposta')
+                .where('usuario.email = :email', { email })
+                .getOne();
+    
+            return user || undefined || null;
+        } catch (error) {
+            throw error;
+        }
+    }
+    
+
     public async updateUser(id: string, data: IUpdateUser) {
         try {
             const userEntity = await this.repository.findOneBy({ id: Number(id) })

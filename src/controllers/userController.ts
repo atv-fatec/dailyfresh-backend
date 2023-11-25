@@ -1,5 +1,6 @@
 import { IAcceptCondition } from '../interfaces/condicao'
-import { ICreateUser } from '../interfaces/usuario'
+import { ICreateUser, IUser } from '../interfaces/usuario'
+import { Usuario } from '../models'
 import userService from '../service/userService'
 import { Request, Response } from 'express'
 
@@ -43,10 +44,46 @@ class UserController {
             }
 
             const create = await userService.createUser(data, conditions)
-            
+             
             res.status(200).json(create)
         } catch (error) {
             res.status(400).json({ data: 'Erro no cadastro do usuário!', msg: `Erro: ${error}` })
+        }
+    }
+
+    public async userLogin(req: Request, res: Response) {
+        try {
+            const fields: string[] = [ "email", "senha"];
+            const errors: string[] = [];
+
+            fields.forEach((field) => {
+                if (!req.body[field]) {
+                    errors.push(`Missing ${field} field`);
+                }
+            });
+
+            if (errors.length > 0) {
+                return res.status(400).json({ errors });
+            }
+
+            const user: IUser = req.body
+
+            const userEmail: Usuario | undefined | null = await userService.verifyEmail(user.email)
+            if(!userEmail?.email){
+                return res.status(401).json({ error: "Por favor, cheque as suas credenciais e tente novamenete." })
+            }
+
+            const isPasswordValid = user.senha === userEmail.senha 
+
+            if (!isPasswordValid) {
+                return res.status(401).json({ error: "Por favor, cheque as suas credenciais e tente novamenete." });
+            }
+
+            const data = { ...userEmail };
+            return res.json(data);
+
+        } catch (error) {
+            res.status(500).json({ error: "Internal Server Error" });
         }
     }
 
