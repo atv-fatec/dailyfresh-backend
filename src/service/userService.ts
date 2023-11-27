@@ -84,7 +84,7 @@ class UserService {
                 const cpf = await this.repository.findOneBy({ cpf: userEntity?.cpf })
                 const email = await this.repository.findOneBy({ email: userEntity?.email })
 
-                if (cpf !== undefined || email !== undefined) {
+                if ((cpf !== undefined || email !== undefined) && userEntity.id !== Number(id)) {
                     return { data: 'Erro ao atualizar o usuário!', msg: `Email ou CPF já estão sendo utilizados!` }
                 }
             }
