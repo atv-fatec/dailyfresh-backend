@@ -88,27 +88,27 @@ class UserService {
 
             const info: IUpdateUser = {
                 nome: data.nome && data.nome !== userEntity?.nome ? data.nome : userEntity?.nome,
-                email: data.email && data.email !== userEntity?.email ? data.email : userEntity?.email,
-                cpf: data.email && data.cpf !== userEntity?.cpf ? data.email : userEntity?.cpf,
+/*                 email: data.email && data.email !== userEntity?.email ? data.email : userEntity?.email,
+                cpf: data.email && data.cpf !== userEntity?.cpf ? data.email : userEntity?.cpf, */
                 telefone: data.telefone && data.telefone !== userEntity?.telefone ? data.telefone : userEntity?.telefone,
                 dataNascimento: data.dataNascimento && data.dataNascimento !== undefined && data.dataNascimento !== userEntity?.dataNascimento ? new Date(data.dataNascimento) : userEntity?.dataNascimento,
                 senha: data.senha && data.senha !== userEntity?.senha ? data.senha : userEntity?.senha,
             }
-
-            if (userEntity?.cpf || userEntity?.email) {
+            /* if (userEntity?.cpf || userEntity?.email) {
                 const cpf = await this.repository.findOneBy({ cpf: userEntity?.cpf })
                 const email = await this.repository.findOneBy({ email: userEntity?.email })
+                console.log("cpf", cpf, "email", email)
 
                 if (cpf !== undefined || email !== undefined) {
                     return { data: 'Erro ao atualizar o usuário!', msg: `Email ou CPF já estão sendo utilizados!` }
                 }
-            }
+            } */
 
             const update = await this.repository.update({ id: Number(id) },
                 {
                     nome: info.nome,
-                    email: info.email,
-                    cpf: info.cpf,
+/*                     email: info.email,
+                    cpf: info.cpf, */
                     telefone: info.telefone,
                     dataNascimento: info.dataNascimento,
                     senha: info.senha

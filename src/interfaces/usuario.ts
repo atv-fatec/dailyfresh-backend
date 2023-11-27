@@ -26,8 +26,8 @@ export interface IReadUser {
 
 export interface IUpdateUser {
     nome?: string,
-    email?: string,
-    cpf?: string,
+    //email?: string,
+    //cpf?: string,
     telefone?: string,
     dataNascimento?: Date,
     senha?: string,
