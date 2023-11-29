@@ -19,7 +19,6 @@ class TermController {
 
             res.status(200).json(create)
         } catch (error) {
-            console.log(error)
             res.status(400).json({ data: '', msg: `Erro: ${error}` })
         }
     }

@@ -99,7 +99,7 @@ class UserService {
                 const email = await this.repository.findOneBy({ email: userEntity?.email })
                 console.log("cpf", cpf, "email", email)
 
-                if (cpf !== undefined || email !== undefined) {
+                if ((cpf !== undefined || email !== undefined) && userEntity.id !== Number(id)) {
                     return { data: 'Erro ao atualizar o usuário!', msg: `Email ou CPF já estão sendo utilizados!` }
                 }
             } */
@@ -137,17 +137,11 @@ class UserService {
 
     public async deleteUser(id: string): Promise<IPromiseResponse> {
         try {
-            const deleteConditions = await this.repositoryResp.delete({
-                usuario: {
-                    id: Number(id)
-                }
-            })
-
             const deletion = await this.repository.delete(id)
 
             const ref = await addDoc(collection(db, 'deleted'), { id: id })
 
-            return { data: { deletion, deleteConditions, ref }, msg: 'Usuário e suas informações deletados com sucesso!' }
+            return { data: { deletion, ref }, msg: 'Usuário e suas informações deletados com sucesso!' }
         } catch (error) {
             return { data: 'Erro ao deletar o usuário!', msg: `Erro: ${error}` }
         }
@@ -163,6 +157,7 @@ class UserService {
                 propagandas: Boolean(data.propagandas),
                 envioEmail: Boolean(data.envioEmail),
                 envioSms: Boolean(data.envioSms),
+                data: new Date().toISOString().slice(0, 19).replace('T', ' '),
                 usuario: { id: id },
                 termo: { id: term }
             })

@@ -1,5 +1,5 @@
-import { Router } from "express";
 import termController from "../controllers/termController";
+import { Router } from "express";
 
 const term = Router()
 

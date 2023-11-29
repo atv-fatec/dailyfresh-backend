@@ -24,9 +24,12 @@ export class Resposta {
     @Column()
     envioSms!: boolean
 
+    @Column()
+    data!: Date
+
     @ManyToOne(() => Termo, (termo) => termo.resposta)
     termo!: Termo
 
-    @ManyToOne(() => Usuario, (usuario) => usuario.resposta)
+    @ManyToOne(() => Usuario, (usuario) => usuario.resposta, { onDelete: "CASCADE"})
     usuario!: Usuario
 }
