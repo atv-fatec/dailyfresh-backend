@@ -35,6 +35,15 @@ class TermController {
             res.status(400).json({ data: '', msg: `Erro: ${error}` })
         }
     }
+
+    public async readLatestTerm(req: Request, res: Response) {
+        try {
+            const latestTermId = await termService.getLatestTerm();
+            res.status(200).json({ latestTermId });
+        } catch (error) {
+            res.status(500).json({ error: 'Internal Server Error' });
+        }
+    }
 }
 
 export default new TermController()

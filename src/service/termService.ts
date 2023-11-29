@@ -73,6 +73,17 @@ class TermService {
         
         return search?.id
     }
+
+    public async getLatestTermData(): Promise<Termo | null> {
+        const latestTerm = await this.respository.findOne({
+            order: {
+                id: 'DESC'
+            }
+        });
+    
+        return latestTerm || null;
+    }
+    
 }
 
 export default new TermService()
