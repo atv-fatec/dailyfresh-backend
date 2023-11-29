@@ -2,13 +2,15 @@ import { IPromiseResponse } from "../interfaces/response";
 import { ICreateTerm } from "../interfaces/termo";
 import { DBSource } from "../config/database";
 import { Repository } from "typeorm";
-import { Termo } from "../models";
+import { Resposta, Termo } from "../models";
 
 class TermService {
     private respository: Repository<Termo>
+    private repositoryResp: Repository<Resposta>
 
     constructor() { // inicialização das variáveis objetos dentro da classe
         this.respository = DBSource.getRepository(Termo)
+        this.repositoryResp = DBSource.getRepository(Resposta)
     }
 
     public async createTerm(data: ICreateTerm): Promise<IPromiseResponse> {
@@ -20,6 +22,13 @@ class TermService {
             })
 
             await this.respository.save(termEntity)
+            await this.repositoryResp.update({}, {
+                armazenamentoDados: false,
+                pagamentoDados: false,
+                propagandas: false,
+                envioEmail: false,
+                envioSms: false
+            });
 
             return { data: termEntity, msg: 'Termo criado com sucesso!' }
         } catch (error) {
