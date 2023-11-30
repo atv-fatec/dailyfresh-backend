@@ -89,7 +89,7 @@ class UserController {
             }
 
             const create = await userService.createUser(data, conditions)
-
+             
             res.status(200).json(create)
         } catch (error) {
             res.status(400).json({ data: 'Erro no cadastro do usuário!', msg: `Erro: ${error}` })

@@ -76,7 +76,7 @@ class UserService {
             const info: IUpdateUser = {
                 nome: data.nome && data.nome !== userEntity?.nome ? data.nome : userEntity?.nome,
                 email: data.email && data.email !== userEntity?.email ? data.email : userEntity?.email,
-                cpf: data.cpf && data.cpf !== userEntity?.cpf ? data.cpf : userEntity?.cpf,
+                cpf: data.email && data.cpf !== userEntity?.cpf ? data.email : userEntity?.cpf,
                 telefone: data.telefone && data.telefone !== userEntity?.telefone ? data.telefone : userEntity?.telefone,
                 dataNascimento: data.dataNascimento && data.dataNascimento !== undefined && data.dataNascimento !== userEntity?.dataNascimento ? new Date(data.dataNascimento) : userEntity?.dataNascimento,
                 senha: data.senha && data.senha !== userEntity?.senha ? data.senha : userEntity?.senha,
@@ -156,6 +156,7 @@ class UserService {
             return { data: 'Erro ao criar as condições!', msg: `Erro: ${error}` }
         }
     }
+    
     public async verifyEmail(email: string): Promise<Usuario | null | undefined > {
         try {
             const user = await this.repository
