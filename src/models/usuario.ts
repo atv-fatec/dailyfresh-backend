@@ -27,5 +27,5 @@ export class Usuario {
     senha!: string
 
     @OneToMany(() => Resposta, (resposta) => resposta.usuario, { onDelete: "CASCADE" })
-    resposta!: Resposta
+    resposta!: Resposta[]
 }

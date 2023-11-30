@@ -1,5 +1,10 @@
 import { IAcceptCondition } from "./condicao"
 
+export interface IUser{
+    email: string,
+    senha: string
+}
+
 export interface ICreateUser {
     nome: string,
     email: string,

@@ -7,6 +7,7 @@ import { Resposta, Usuario } from '../models';
 import { db } from '../config/firebase';
 import termService from './termService';
 import { Repository } from 'typeorm';
+import serviceTerm from "./termService"
 
 class UserService {
     private repository: Repository<Usuario>
@@ -21,6 +22,7 @@ class UserService {
         try {
             const email = await this.repository.findOneBy({ email: data.email })
             const cpf = await this.repository.findOneBy({ cpf: data.cpf })
+            
             if (cpf !== null|| undefined || email !== null || undefined) {
                 return { data: 'Email ou CPF já estão sendo utilizados!', msg: 'Erro no cadastro do usuário!' }
             }
@@ -74,7 +76,7 @@ class UserService {
             const info: IUpdateUser = {
                 nome: data.nome && data.nome !== userEntity?.nome ? data.nome : userEntity?.nome,
                 email: data.email && data.email !== userEntity?.email ? data.email : userEntity?.email,
-                cpf: data.email && data.cpf !== userEntity?.cpf ? data.email : userEntity?.cpf,
+                cpf: data.cpf && data.cpf !== userEntity?.cpf ? data.cpf : userEntity?.cpf,
                 telefone: data.telefone && data.telefone !== userEntity?.telefone ? data.telefone : userEntity?.telefone,
                 dataNascimento: data.dataNascimento && data.dataNascimento !== undefined && data.dataNascimento !== userEntity?.dataNascimento ? new Date(data.dataNascimento) : userEntity?.dataNascimento,
                 senha: data.senha && data.senha !== userEntity?.senha ? data.senha : userEntity?.senha,
@@ -152,6 +154,20 @@ class UserService {
             return { data: accept, msg: 'Condições registradas com sucesso!' }
         } catch (error) {
             return { data: 'Erro ao criar as condições!', msg: `Erro: ${error}` }
+        }
+    }
+    public async verifyEmail(email: string): Promise<Usuario | null | undefined > {
+        try {
+            const user = await this.repository
+                .createQueryBuilder('usuario')
+                .leftJoinAndSelect('usuario.resposta', 'resposta')
+                .leftJoinAndSelect('resposta.termo', 'termo') 
+                .where('usuario.email = :email', { email })
+                .orderBy('resposta.id', 'DESC')
+                .getOne();
+            return user || undefined || null;
+        } catch (error) {
+            throw error;
         }
     }
 }
