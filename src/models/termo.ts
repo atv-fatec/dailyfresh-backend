@@ -14,10 +14,17 @@ export class Termo {
     @Column()
     data!: Date
 
-    @Column({
-        type: 'text'
-    })
+    @Column({ type: 'text' })
     mensagem!: string
+
+    @Column({ type: 'text' })
+    obrigatorios!: string
+
+    @Column({ type: 'text' })
+    condicoes!: string
+
+    @Column({ type: 'text' })
+    meios!: string
 
     @OneToMany(() => Resposta, (resposta) => resposta.termo)
     resposta!: Resposta

@@ -52,8 +52,12 @@ class UserController {
             const lastTerm = await serviceTerm.getLatestTerm()
             const equalTerm = userLastTerm == lastTerm ? true : false
 
+            const lastTermConditions = await serviceTerm.getLatestTermConditions()
+
+            const mandatoryTerms = await serviceTerm.getLatestTermMandatory()
+
             if(!equalTerm){
-                return res.status(401).json({ error: "Por favor, concorde com o ultimo termo." });
+                return res.status(401).json({ error: `Por favor, concorde com o último termo.`, obrigatorios: mandatoryTerms, condicoes: lastTermConditions.conditions, meio: lastTermConditions.meios });
             }
 
             const data = { ...userEmail };
@@ -66,7 +70,9 @@ class UserController {
     public async createUser(req: Request, res: Response) {
         try {
             const data: ICreateUser = req.body
-            const conditions: IAcceptCondition = req.body.termos
+            const obrigatorios = req.body.obrigatorios
+            const condicoes = req.body.condicoes
+            const meios = req.body.meios
             const obrigatorio: (keyof ICreateUser)[] = ['nome', 'email', 'cpf', 'telefone', 'dataNascimento', 'senha']
             const validacao = obrigatorio.every(properties => data[properties] !== undefined && data[properties] !== null)
 
@@ -76,19 +82,13 @@ class UserController {
                 })
             }
 
-            if (!conditions.armazenamentoDados || !conditions.pagamentoDados) {
-                return res.status(400).json({
-                    data: 'Cadastro não concluído por não concordar com os termos obrigatórios!'
-                })
-            }
-
             if (UserController.legalAdult(data.dataNascimento) < 18) {
                 return res.status(400).json({
                     data: 'Cadastro não concluído por não ser maior de idade!'
                 })
             }
 
-            const create = await userService.createUser(data, conditions)
+            const create = await userService.createUser(data, obrigatorios, condicoes, meios)
              
             res.status(200).json(create)
         } catch (error) {
@@ -124,9 +124,11 @@ class UserController {
     public async updateConditions(req: Request, res: Response) {
         try {
             const { id } = req.params
-            const data = req.body
+            const obrigatorios = req.body.obrigatorios
+            const condicoes = req.body.condicoes
+            const meios = req.body.meios
 
-            const update = await userService.updateConditions(id, data)
+            const update = await userService.updateConditions(id, obrigatorios, condicoes, meios)
 
             res.status(200).json(update)
         } catch (error) {

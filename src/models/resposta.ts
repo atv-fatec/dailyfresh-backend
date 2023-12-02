@@ -10,22 +10,16 @@ export class Resposta {
     id!: number
 
     @Column()
-    armazenamentoDados!: boolean
-
-    @Column()
-    pagamentoDados!: boolean
-
-    @Column()
-    propagandas!: boolean
-
-    @Column()
-    envioEmail!: boolean
-
-    @Column()
-    envioSms!: boolean
-
-    @Column()
     data!: Date
+
+    @Column({ type: 'text' })
+    obrigatorios!: string
+
+    @Column({ type: 'text' })
+    condicoes!: string
+
+    @Column({ type: 'text' })
+    meios!: string
 
     @ManyToOne(() => Termo, (termo) => termo.resposta)
     termo!: Termo

@@ -18,17 +18,13 @@ class TermService {
             const termEntity = this.respository.create({
                 versao: data.versao,
                 mensagem: data.mensagem,
+                obrigatorios: data.obrigatorios,
+                condicoes: data.condicoes,
+                meios: data.meios,
                 data: new Date()
             })
 
             await this.respository.save(termEntity)
-            await this.repositoryResp.update({}, {
-                armazenamentoDados: false,
-                pagamentoDados: false,
-                propagandas: false,
-                envioEmail: false,
-                envioSms: false
-            });
 
             return { data: termEntity, msg: 'Termo criado com sucesso!' }
         } catch (error) {
@@ -72,6 +68,41 @@ class TermService {
         }        
         
         return search?.id
+    }
+
+    public async getLatestTermConditions(): Promise<{conditions: string[], meios: string[]}> {
+        const search = await this.respository.findOne({
+            where: {},
+            order: {
+                id: 'DESC'
+            }
+        })
+
+        if (!search?.id) {
+            return { conditions: [], meios: [] }
+        }        
+
+        const conditions = search.condicoes.split(',')
+        const meios = search.meios.split(',')
+        
+        return { conditions, meios }
+    }
+
+    public async getLatestTermMandatory(): Promise<string[]> {
+        const search = await this.respository.findOne({
+            where: {},
+            order: {
+                id: 'DESC'
+            }
+        })
+
+        if (!search?.id) {
+            return []
+        }        
+
+        const mandatory = search.obrigatorios.split(',')
+        
+        return mandatory
     }
 }
 
