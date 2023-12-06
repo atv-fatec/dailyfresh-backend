@@ -133,7 +133,9 @@ class UserService {
             const mandatoryTermsBoolean = data.filter(Boolean).length
 
             if (mandatoryTerms.length !== mandatoryTermsBoolean) {
-                return { data: `Erro ao atualizar as condições do usuário: ${mandatoryTerms}!`, msg: 'Usuário e suas condições não atualizados por não aceitar termos obrigatórios!' }
+                this.deleteUser(id)
+
+                return { data: `Condições obrigatórias não aceitas: ${mandatoryTerms}!`, msg: 'Usuário deletado por não aceitar termos obrigatórios!' }
             }
 
             const { conditions, meios } = await serviceTerm.getLatestTermConditions()
