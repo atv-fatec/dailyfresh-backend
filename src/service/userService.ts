@@ -214,6 +214,24 @@ class UserService {
             throw error;
         }
     }
+
+    public async getUserByEmail(email: string): Promise<Usuario | null> {
+        try {
+            const user = await this.repository
+                .createQueryBuilder('usuario')
+                .leftJoinAndSelect('usuario.resposta', 'resposta')
+                .leftJoinAndSelect('resposta.termo', 'termo')
+                .where('usuario.email = :email', { email })
+                .orderBy('resposta.id', 'DESC')
+                .getOne();
+
+            return user || null;
+        } catch (error) {
+            throw new Error(`Erro ao encontrar usuário pelo email: ${error}`);
+        }
+    }
+
+
 }
 
 export default new UserService()

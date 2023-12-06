@@ -147,6 +147,22 @@ class UserController {
             res.status(400).json({ data: 'Erro ao deletar o usuário!', msg: `Erro: ${error}` })
         }
     }
+
+    public async getUserByEmail(req: Request, res: Response) {
+        try {
+            const { email } = req.body;
+            const user = await userService.getUserByEmail(email);
+
+            if (!user) {
+                return res.status(404).json({ data: 'Usuário não encontrado!', msg: 'Email não cadastrado no sistema!' });
+            }
+
+            res.status(200).json({ data: user, msg: 'Usuário encontrado!' });
+        } catch (error) {
+            res.status(400).json({ data: 'Erro ao buscar o usuário!', msg: `Erro: ${error}` });
+        }
+}
+
 }
 
 export default new UserController()
