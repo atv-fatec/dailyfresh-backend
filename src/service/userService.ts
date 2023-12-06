@@ -120,53 +120,64 @@ class UserService {
                 }
             )
 
+            if (
+                data.dataNascimento &&
+                new Date(data.dataNascimento) > new Date(new Date().setFullYear(new Date().getFullYear() - 18))
+            ) {
+                return {
+                    data: 'Erro ao atualizar o usuário!',
+                    msg: 'Você não pode definir a data de nascimento para alguém menor de 18 anos.',
+                };
+            }
+
             return { data: update, msg: 'Usuário e suas informações atualizados com sucesso!' }
         } catch (error) {
             return { data: 'Erro ao atualizar o usuário!', msg: `Erro: ${error}` }
         }
     }
-
     public async updateConditions(id: string, data: boolean[], condicoes: boolean[], meio: boolean[]): Promise<IPromiseResponse> {
         try {
-            const mandatoryTerms = await serviceTerm.getLatestTermMandatory()
+            const mandatoryTerms = await serviceTerm.getLatestTermMandatory();
+    
+            const mandatoryTermsBoolean = data.filter(Boolean).length;
 
-            const mandatoryTermsBoolean = data.filter(Boolean).length
-
-            if (mandatoryTerms.length !== mandatoryTermsBoolean) {
-                this.deleteUser(id)
-
-                return { data: `Condições obrigatórias não aceitas: ${mandatoryTerms}!`, msg: 'Usuário deletado por não aceitar termos obrigatórios!' }
+            const hasFalseTerm = mandatoryTermsBoolean !== data.length;
+            if (hasFalseTerm) {
+                this.deleteUser(id);
+                return { data: `Condições obrigatórias não aceitas: ${mandatoryTerms}!`, msg: 'Usuário deletado por não aceitar termos obrigatórios!' };
             }
-
-            const { conditions, meios } = await serviceTerm.getLatestTermConditions()
-
+    
+            const { conditions, meios } = await serviceTerm.getLatestTermConditions();
+    
             if (conditions.length !== condicoes.length) {
-                return { data: `Erro ao atualizar as condições do usuário: ${conditions}!`, msg: 'Usuário e suas condições não atualizados por não marcar todos os campos de condições!' }
+                return { data: `Erro ao atualizar as condições do usuário: ${conditions}!`, msg: 'Usuário e suas condições não atualizados por não marcar todos os campos de condições!' };
             }
-
+    
             if (meio.length !== meios.length) {
-                return { data: `Erro ao atualizar as condições do usuário: ${meios}!`, msg: 'Usuário e suas condições não atualizados por não marcar todos os campos de meios!' }
+                return { data: `Erro ao atualizar as condições do usuário: ${meios}!`, msg: 'Usuário e suas condições não atualizados por não marcar todos os campos de meios!' };
             }
-
-            const update = this.acceptConditions(data, Number(id), condicoes, meio)
-
-            return { data: update, msg: 'Usuário e suas condições atualizados com sucesso!' }
+    
+            const update = this.acceptConditions(data, Number(id), condicoes, meio);
+    
+            return { data: update, msg: 'Usuário e suas condições atualizados com sucesso!' };
         } catch (error) {
-            return { data: 'Erro ao atualizar as condições do usuário!', msg: `Erro: ${error}` }
+            return { data: 'Erro ao atualizar as condições do usuário!', msg: `Erro: ${error}` };
         }
     }
-
+    
+      
     public async deleteUser(id: string): Promise<IPromiseResponse> {
         try {
-            const deletion = await this.repository.delete(id)
-
-            const ref = await addDoc(collection(db, 'deleted'), { id: id })
-
-            return { data: { deletion, ref }, msg: 'Usuário e suas informações deletados com sucesso!' }
+            const deletion = await this.repository.delete(id);
+    
+            const ref = await addDoc(collection(db, 'deleted'), { id: id });
+    
+            return { data: { deletion, ref }, msg: 'Usuário e suas informações deletados com sucesso!' };
         } catch (error) {
-            return { data: 'Erro ao deletar o usuário!', msg: `Erro: ${error}` }
+            return { data: 'Erro ao deletar o usuário!', msg: `Erro: ${error}` };
         }
     }
+    
 
     public async acceptConditions(data: boolean[], id: number, condicoes: boolean[], meios: boolean[]) {
         try {
