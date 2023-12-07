@@ -5,7 +5,7 @@ const user = Router()
 
 user.post('/create', userController.createUser)
 user.get('/read/:id', userController.readUser)
-user.get('/getByEmail', userController.getUserByEmail)
+user.post('/getByEmail', userController.getUserByEmail)
 user.put('/update/:id', userController.updateUser)
 user.put('/updateConditions/:id', userController.updateConditions)
 user.delete('/delete/:id', userController.deleteUser)
